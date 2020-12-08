@@ -25,7 +25,7 @@ struct PLAYER_NAME : public Player
     // adalt, abaix, esquerra, dreta
     const vector<vector<int>> mov = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
-    void BFS(Pos p, int dest, int v, int)
+    void BFS(Pos p)
     {
         queue<Pos> cola;
         for (int i = 0; i < 4; ++i)
