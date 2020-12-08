@@ -27,14 +27,23 @@ struct PLAYER_NAME : public Player
 
     void BFS(Pos p)
     {
+        vector<vector<bool>> visitats(board_cols(), vector<bool>(board_rows(), false));
         queue<Pos> cola;
-        for (int i = 0; i < 4; ++i)
+        cola.push(p);
+        while (!cola.empty())
         {
-            p.i += mov[i][0];
-            p.j += mov[i][1];
-            if (pos_ok(p))
+            // p has to be the node visited
+            Pos pact = cola.front();
+            cola.pop();
+            for (int i = 0; i < 4; ++i)
             {
-                cola.push(p);
+                Pos ptemp = pact;
+                ptemp.i += mov[i][0];
+                ptemp.j += mov[i][1];
+                if (pos_ok(ptemp))
+                {
+                    cola.push(ptemp);
+                }
             }
         }
     }
@@ -53,7 +62,8 @@ struct PLAYER_NAME : public Player
                 cerr << "citizen " << id << " in position: " << p << endl;
                 // BFS(p);
                 //Dir d = Down; // prova
-                if (pos_ok(p+Down)) {
+                if (pos_ok(p + Down))
+                {
                     move(id, Down);
                 }
             }
@@ -66,7 +76,8 @@ struct PLAYER_NAME : public Player
                 cerr << "citizen " << id << " in position: " << p << endl;
                 // BFS(p);
 
-                if (pos_ok(p+Down)) {
+                if (pos_ok(p + Down))
+                {
                     move(id, Down);
                 }
             }
