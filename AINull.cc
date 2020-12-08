@@ -24,14 +24,15 @@ struct PLAYER_NAME : public Player
     // vector <Pos> guns;
     // vector <Pos> moneys;
     // vector <Pos> foods;
-    bool start = true;
+    // bool start = true;
+
     const vector<Dir> dirs = {Up, Down, Left, Right};
     // adalt, abaix, esquerra, dreta
     const vector<vector<int>> mov = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
     map<Pos, Pos> Path;
 
-    void BFS(Pos p, char c)
+    Pos BFS(Pos p, char c)
     {
         vector<vector<bool>> visitats(board_cols(), vector<bool>(board_rows(), false));
         queue<Pos> cola;
@@ -41,19 +42,15 @@ struct PLAYER_NAME : public Player
             // p has to be the node visited
             Pos pact = cola.front();
             cola.pop();
-
+    
             Cell c = cell(pact);
             visitats[pact.i][pact.j] = true;
-            if (c == 'b')
-            {
-                if (c.weapon = Bazooka)
-                    return;
-            }
-            else if (c == 'g')
-            {
-                if (c.weapon == Gun)
-                    return;
-            }
+
+            if (c.weapon == Bazooka)
+                return pact;
+            else if (c.weapon == Gun)
+                return pact;
+
             for (int i = 0; i < 4; ++i)
             {
                 Pos ptemp = pact;
@@ -67,6 +64,29 @@ struct PLAYER_NAME : public Player
                 }
             }
         }
+        return Pos(-1,-1);
+    }
+    Dir Pos2dir (Pos p) {
+        if (p == Pos(-1,0)) return Up;
+        else if (p == Pos(1,0)) return Down;
+        else if (p == Pos(0,-1)) return Left;
+        else if (p == Pos(0,1)) return Right;
+        else return Up;
+    }
+    // Invariant: l'objecte ha d'existir en el mapa en el moment de la crida i l'hem trobat amb el BFS
+    Dir direccionBFS(Pos pciti, Pos pobj) {
+        Pos ptemp = pobj;
+        Pos ptemp2 = Path.at(ptemp);
+        while (pciti != ptemp) {
+            ptemp = Path.at(ptemp);
+            ptemp2 = Path.at(ptemp2);
+        }
+        Pos r; 
+        r.i = ptemp.i - pciti.i;
+        r.j = ptemp.j - pciti.j;
+        cerr << r;
+        Dir dr = Pos2dir(r);
+        return dr;
     }
 
     /**
@@ -121,13 +141,15 @@ struct PLAYER_NAME : public Player
             vector<int> w = warriors(me());
             for (int id : w)
             { // iterate over warriors
-                Pos p = citizen(id).pos;
-                cerr << "citizen " << id << " in position: " << p << endl;
-                // BFS(p);
+                Pos pciti = citizen(id).pos;
+                cerr << "citizen " << id << " in position: " << pciti << endl;
+                char c = 'b'; // busquem bazokas
+                Pos pobj = BFS(pciti,c);
+                Dir d = direccionBFS(pciti,pobj);
                 //Dir d = Down; // prova
-                if (pos_ok(p + Down))
+                if (pos_ok(pciti + d))
                 {
-                    move(id, Down);
+                    move(id, d);
                 }
             }
 
