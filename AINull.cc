@@ -6,10 +6,9 @@
  */
 #define PLAYER_NAME Null
 
-// BFS(vector<vector<int>> adj, int src, int dest, int v, int)
-// {
-// 
-// }
+void BFS(Pos p, int dest, int v, int)
+{
+}
 
 struct PLAYER_NAME : public Player
 {
@@ -32,16 +31,42 @@ struct PLAYER_NAME : public Player
    */
     virtual void play()
     {
-        //// n = board max column, m = board max row
-        int x;
-        for (int i = 0; i < 10; ++i) {
-            for (int j = 0; j < 10; ++j) {
-                x = x+1;
+        if (is_day())
+        {
+			vector<int> w = warriors(me());
+			for (int id : w) { // iterate over warriors
+                Pos p = citizen(id).pos;
+                // BFS(p);
+                Dir d = Down; // prova
+                move(id, d);
             }
+
+			// At day take care of builders
+			vector<int> b = builders(me());
+			for (int id : b) { // iterate over builders
+                Pos p = citizen(id).pos;
+                // BFS(p);
+                Dir d = Down; // prova
+                move(id, d);
+            }
+
+            // n = board max column, m = board max row
+            int n = board_cols();
+            int m = board_rows();
+            for (int i = 0; i < n; ++i)
+            {
+                for (int j = 0; j < m; ++j)
+                {
+                    Cell casilla = cell(i, j);
+                    cerr << casilla.type << ' '; // cout << street or building
+                }
+                cerr << endl;
+            }
+            cerr << "això es una prova";
         }
-        cerr << x;
-        //Cell = cell(0, 0);
-        cerr << "això es una prova";
+        else { // night time
+
+        }
     }
 };
 
