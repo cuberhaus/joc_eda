@@ -12,9 +12,9 @@
             "program": "${workspaceFolder}/Game",
             "args": [
                 "Null",
-                "Null",
-                "Null",
-                "Null",
+                "Demo",
+                "Demo",
+                "Demo",
                 "-s",
                 "30",
             ],

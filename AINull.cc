@@ -6,10 +6,6 @@
  */
 #define PLAYER_NAME Null
 
-void BFS(Pos p, int dest, int v, int)
-{
-}
-
 struct PLAYER_NAME : public Player
 {
 
@@ -25,6 +21,23 @@ struct PLAYER_NAME : public Player
     /**
    * Types and attributes for your player can be defined here.
    */
+    const vector<Dir> dirs = {Up, Down, Left, Right};
+    // adalt, abaix, esquerra, dreta
+    const vector<vector<int>> mov = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+    void BFS(Pos p, int dest, int v, int)
+    {
+        queue<Pos> cola;
+        for (int i = 0; i < 4; ++i)
+        {
+            p.i += mov[i][0];
+            p.j += mov[i][1];
+            if (pos_ok(p))
+            {
+                cola.push(p);
+            }
+        }
+    }
 
     /**
    * Play method, invoked once per each round.
@@ -33,39 +46,47 @@ struct PLAYER_NAME : public Player
     {
         if (is_day())
         {
-			vector<int> w = warriors(me());
-			for (int id : w) { // iterate over warriors
+            vector<int> w = warriors(me());
+            for (int id : w)
+            { // iterate over warriors
                 Pos p = citizen(id).pos;
+                cerr << "citizen " << id << " in position: " << p << endl;
                 // BFS(p);
-                Dir d = Down; // prova
-                move(id, d);
+                //Dir d = Down; // prova
+                if (pos_ok(p+Down)) {
+                    move(id, Down);
+                }
             }
 
-			// At day take care of builders
-			vector<int> b = builders(me());
-			for (int id : b) { // iterate over builders
+            // At day take care of builders
+            vector<int> b = builders(me());
+            for (int id : b)
+            { // iterate over builders
                 Pos p = citizen(id).pos;
+                cerr << "citizen " << id << " in position: " << p << endl;
                 // BFS(p);
-                Dir d = Down; // prova
-                move(id, d);
+
+                if (pos_ok(p+Down)) {
+                    move(id, Down);
+                }
             }
 
             // n = board max column, m = board max row
-            int n = board_cols();
-            int m = board_rows();
-            for (int i = 0; i < n; ++i)
-            {
-                for (int j = 0; j < m; ++j)
-                {
-                    Cell casilla = cell(i, j);
-                    cerr << casilla.type << ' '; // cout << street or building
-                }
-                cerr << endl;
-            }
-            cerr << "això es una prova";
+            //int n = board_cols();
+            //int m = board_rows();
+            //for (int i = 0; i < n; ++i)
+            //{
+            //    for (int j = 0; j < m; ++j)
+            //    {
+            //        Cell casilla = cell(i, j);
+            //        cerr << casilla.type << ' '; // cout << street or building
+            //    }
+            //    cerr << endl;
+            //}
+            //cerr << "això es una prova";
         }
-        else { // night time
-
+        else
+        { // night time
         }
     }
 };
