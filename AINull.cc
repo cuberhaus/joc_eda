@@ -5,10 +5,8 @@
  * with the same name and .cc extension.
  */
 #define PLAYER_NAME Null
-
 struct PLAYER_NAME : public Player
 {
-
     /**
    * Factory: returns a new instance of this class.
    * Do not modify this function.
@@ -21,11 +19,19 @@ struct PLAYER_NAME : public Player
     /**
    * Types and attributes for your player can be defined here.
    */
+
+    // vector <Pos> bazookas;
+    // vector <Pos> guns;
+    // vector <Pos> moneys;
+    // vector <Pos> foods;
+    bool start = true;
     const vector<Dir> dirs = {Up, Down, Left, Right};
     // adalt, abaix, esquerra, dreta
     const vector<vector<int>> mov = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
-    void BFS(Pos p)
+    map<Pos, Pos> Path;
+
+    void BFS(Pos p, char c)
     {
         vector<vector<bool>> visitats(board_cols(), vector<bool>(board_rows(), false));
         queue<Pos> cola;
@@ -35,13 +41,28 @@ struct PLAYER_NAME : public Player
             // p has to be the node visited
             Pos pact = cola.front();
             cola.pop();
+
+            Cell c = cell(pact);
+            visitats[pact.i][pact.j] = true;
+            if (c == 'b')
+            {
+                if (c.weapon = Bazooka)
+                    return;
+            }
+            else if (c == 'g')
+            {
+                if (c.weapon == Gun)
+                    return;
+            }
             for (int i = 0; i < 4; ++i)
             {
                 Pos ptemp = pact;
                 ptemp.i += mov[i][0];
                 ptemp.j += mov[i][1];
-                if (pos_ok(ptemp))
+                Cell c = cell(ptemp);
+                if (pos_ok(ptemp) and c.type == Street and not visitats[ptemp.i][ptemp.j])
                 {
+                    Path[ptemp] = pact;
                     cola.push(ptemp);
                 }
             }
@@ -53,6 +74,48 @@ struct PLAYER_NAME : public Player
    */
     virtual void play()
     {
+        // if (start) {
+        //     start = false;
+        //     bazookas.resize(num_ini_bazookas());
+        //     guns.resize(num_ini_guns());
+        //     moneys.resize(num_ini_money());
+        //     foods.resize(num_ini_food());
+        //     for (int i = 0; i < num_ini_bazookas(); ++i) {
+        //         bazookas[i].i = -1;
+        //         bazookas[i].j = -1;
+        //     }
+        //     for (int i = 0; i < num_ini_guns(); ++i) {
+        //         guns[i].i = -1;
+        //         guns[i].j = -1;
+        //     }
+        //     for (int i = 0; i < num_ini_money(); ++i) {
+        //         moneys[i].i = -1;
+        //         moneys[i].j = -1;
+        //     }
+        //     for (int i = 0; i < num_ini_food(); ++i) {
+        //         foods[i].i = -1;
+        //         foods[i].j = -1;
+        //     }
+        // }
+
+        // n = board max column, m = board max row
+        // int n = board_cols();
+        // int m = board_rows();
+        // for (int i = 0; i < n; ++i)
+        // {
+        //     for (int j = 0; j < m; ++j)
+        //     {
+        //         Cell casilla = cell(i, j);
+        //         if (casilla.weapon == Bazooka) {
+        //
+        //         }
+        //         cerr << casilla.type << ' '; // cout << street or building
+        //     }
+        //     cerr << endl;
+        // }
+
+        // INICIALITZAR INVARIANTS
+        Path.clear();
         if (is_day())
         {
             vector<int> w = warriors(me());
@@ -81,20 +144,6 @@ struct PLAYER_NAME : public Player
                     move(id, Down);
                 }
             }
-
-            // n = board max column, m = board max row
-            //int n = board_cols();
-            //int m = board_rows();
-            //for (int i = 0; i < n; ++i)
-            //{
-            //    for (int j = 0; j < m; ++j)
-            //    {
-            //        Cell casilla = cell(i, j);
-            //        cerr << casilla.type << ' '; // cout << street or building
-            //    }
-            //    cerr << endl;
-            //}
-            //cerr << "això es una prova";
         }
         else
         { // night time
