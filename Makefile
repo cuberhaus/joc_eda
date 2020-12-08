@@ -4,8 +4,8 @@ DUMMY_OBJ = AIDummy.o
 EXTRA_OBJ =
 
 # Configuration
-OPTIMIZE = 3 # Optimization level    (0 to 3)
-DEBUG    = 0 # Compile for debugging (0 or 1)
+OPTIMIZE = 0 # Optimization level    (0 to 3)
+DEBUG    = 1 # Compile for debugging (0 or 1)
 PROFILE  = 0 # Compile for profile   (0 or 1)
 
 # For debugging matches against Dummy
@@ -23,7 +23,7 @@ ifeq ($(strip $(DEBUG)),1)
 	DEBUGFLAGS=-g -O0 -fno-inline #-D_GLIBCXX_DEBUG 
 endif
 
-CXXFLAGS = -std=c++11 -Wall -Wno-unused-variable -fPIC $(PROFILEFLAGS) $(DEBUGFLAGS) -O$(strip $(OPTIMIZE))
+CXXFLAGS = -std=c++11 -Wall -g -Wno-unused-variable -fPIC $(PROFILEFLAGS) $(DEBUGFLAGS) -O$(strip $(OPTIMIZE)) 
 LDFLAGS  = -std=c++11                            $(PROFILEFLAGS) $(DEBUGFLAGS) -O$(strip $(OPTIMIZE))
 
 
