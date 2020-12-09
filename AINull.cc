@@ -20,12 +20,6 @@ struct PLAYER_NAME : public Player
    * Types and attributes for your player can be defined here.
    */
 
-    // vector <Pos> bazookas;
-    // vector <Pos> guns;
-    // vector <Pos> moneys;
-    // vector <Pos> foods;
-    // bool start = true;
-
     const vector<Dir> dirs = {Up, Down, Left, Right};
     // adalt, abaix, esquerra, dreta
     const vector<vector<int>> mov = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
@@ -34,7 +28,7 @@ struct PLAYER_NAME : public Player
 
     Pos BFS(Pos p, char objecte)
     {
-        vector<vector<bool>> visitats(board_cols(), vector<bool>(board_rows(), false));
+        //vector<vector<bool>> visitats(board_cols(), vector<bool>(board_rows(), false));
         queue<Pos> cola;
         cola.push(p);
         while (not cola.empty())
@@ -45,7 +39,7 @@ struct PLAYER_NAME : public Player
             if (pos_ok(pact))
             {
                 Cell c = cell(pact);
-                visitats[pact.i][pact.j] = true;
+                //visitats[pact.i][pact.j] = true;
 
                 if (c.weapon == Bazooka and objecte == 'b')
                     return pact;
@@ -57,10 +51,12 @@ struct PLAYER_NAME : public Player
                     Pos ptemp = pact;
                     ptemp.i += mov[i][0];
                     ptemp.j += mov[i][1];
-                    if (pos_ok(ptemp) and cell(ptemp).type == Street and cell(ptemp).id == -1 and not visitats[ptemp.i][ptemp.j])
+                    if (pos_ok(ptemp) and cell(ptemp).type == Street and cell(ptemp).id == -1) //and not visitats[ptemp.i][ptemp.j])
                     {
-                        Path[ptemp] = pact;
-                        cola.push(ptemp);
+                        if (Path.find(ptemp) == Path.end()) {
+                            Path[ptemp] = pact;
+                            cola.push(ptemp);
+                        }
                     }
                 }
             }
