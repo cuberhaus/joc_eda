@@ -37,7 +37,7 @@ struct PLAYER_NAME : public Player
         vector<vector<bool>> visitats(board_cols(), vector<bool>(board_rows(), false));
         queue<Pos> cola;
         cola.push(p);
-        while (!cola.empty())
+        while (not cola.empty())
         {
             // p has to be the node visited
             Pos pact = cola.front();
@@ -57,7 +57,7 @@ struct PLAYER_NAME : public Player
                     Pos ptemp = pact;
                     ptemp.i += mov[i][0];
                     ptemp.j += mov[i][1];
-                    if (pos_ok(ptemp) and cell(ptemp).type == Street and not visitats[ptemp.i][ptemp.j])
+                    if (pos_ok(ptemp) and cell(ptemp).type == Street and cell(ptemp).id == -1 and not visitats[ptemp.i][ptemp.j])
                     {
                         Path[ptemp] = pact;
                         cola.push(ptemp);
@@ -167,7 +167,7 @@ struct PLAYER_NAME : public Player
             mdone = false;
             if (bexist)
             {
-                Pos pobj = BFS(pciti, 'b');
+                Pos pobj = BFS(pciti, 'b'); // buscamos bazokas
                 bdone = true;
                 if (pobj != Pos(-1, -1))
                 {
@@ -199,26 +199,55 @@ struct PLAYER_NAME : public Player
                     gexist = false;
                 }
             }
+            Path.clear();
+        }
             //}
 
             //     // At day take care of builders
-            //     vector<int> b = builders(me());
-            //     for (int id : b)
-            //     { // iterate over builders
-            //         Pos pciti = citizen(id).pos;
-            //         //cerr << "citizen " << id << " in position: " << pciti << endl;
-            //         char c = 'b'; // busquem bazokas
-            //         Pos pobj = BFS(pciti, c);
-            //         if (pobj != Pos(-1, -1))
-            //         {
-            //             Dir d = direccionBFS(pciti, pobj);
-            //             //Dir d = Down; // prova
-            //             if (pos_ok(pciti + d))
-            //             {
-            //                 move(id, d);
-            //             }
-            //         }
-            //     }
+            vector<int> b = builders(me());
+            for (int id : b)
+            { // iterate over builders
+
+                Pos pciti = citizen(id).pos;
+                bdone = false;
+                gdone = false;
+                mdone = false;
+                if (bexist)
+                {
+                    Pos pobj = BFS(pciti, 'b');
+                    bdone = true;
+                    if (pobj != Pos(-1, -1))
+                    {
+                        Dir d = direccionBFS(pciti, pobj);
+                        if (pos_ok(pciti + d))
+                        {
+                            move(id, d);
+                        }
+                    }
+                    else
+                    {
+                        bexist = false;
+                    }
+                }
+                else if (gexist)
+                {
+                    Pos pobj = BFS(pciti, 'g');
+                    gdone = true;
+                    if (pobj != Pos(-1, -1))
+                    {
+                        Dir d = direccionBFS(pciti, pobj);
+                        if (pos_ok(pciti + d))
+                        {
+                            move(id, d);
+                        }
+                    }
+                    else
+                    {
+                        gexist = false;
+                    }
+                }
+            Path.clear();
+            }
             // }
             // else
             // { // night time
@@ -258,7 +287,7 @@ struct PLAYER_NAME : public Player
             //             }
             //         }
             //     }
-        }
+        
     }
 };
 
