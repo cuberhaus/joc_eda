@@ -71,19 +71,19 @@ struct PLAYER_NAME : public Player
         else if (p == Pos(1,0)) return Down;
         else if (p == Pos(0,-1)) return Left;
         else if (p == Pos(0,1)) return Right;
-        else return Up;
+        else return Up; // this should never happen
     }
     // Invariant: l'objecte ha d'existir en el mapa en el moment de la crida i l'hem trobat amb el BFS
     Dir direccionBFS(Pos pciti, Pos pobj) {
         Pos ptemp = pobj;
-        Pos ptemp2 = Path.at(ptemp);
+        vector <Pos> positions;
         while (pciti != ptemp) {
+            positions.push_back(ptemp);
             ptemp = Path.at(ptemp);
-            ptemp2 = Path.at(ptemp2);
         }
         Pos r; 
-        r.i = ptemp.i - pciti.i;
-        r.j = ptemp.j - pciti.j;
+        r.i = - pciti.i;
+        r.j = - pciti.j;
         cerr << r;
         Dir dr = Pos2dir(r);
         return dr;
