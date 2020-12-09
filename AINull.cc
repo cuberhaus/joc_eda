@@ -104,26 +104,27 @@ struct PLAYER_NAME : public Player
    */
     virtual void play()
     {
-        // INICIALITZAR INVARIANTS
+        // INICIALITZAR INVARIANT
         Path.clear();
+        // Suposem que existeixen bazokas pistolas i diners dins el mapa
+        bool bexist = true;
+        bool gexist = true;
+        bool mexist = true;
         if (is_day())
         {
             vector<int> w = warriors(me());
-            bool bexist = true;
-            bool gexist = true;
-            bool mexist = true;
-            bool bdone = false;
-            bool gdone = false;
-            bool mdone = false;
+
+            // Iterem sobre els guerrers
             for (int id : w)
-            { // iterate over warriors
+            {
                 Pos pciti = citizen(id).pos;
-                bdone = false;
-                gdone = false;
-                mdone = false;
+                // Serà true si busquem amb Bfs (bazokas, pistoles...)
+                bool bdone = false;
+                bool gdone = false;
+                bool mdone = false;
                 if (bexist)
                 {
-                    Pos pobj = BFS(pciti, 'b'); // buscamos bazokas
+                    Pos pobj = BFS(pciti, 'b'); // busquem bazokas
                     bdone = true;
                     if (pobj != Pos(-1, -1))
                     {
@@ -140,7 +141,7 @@ struct PLAYER_NAME : public Player
                 }
                 else if (gexist)
                 {
-                    Pos pobj = BFS(pciti, 'g');
+                    Pos pobj = BFS(pciti, 'g'); // busquem pistoles
                     gdone = true;
                     if (pobj != Pos(-1, -1))
                     {
@@ -157,17 +158,16 @@ struct PLAYER_NAME : public Player
                 }
                 Path.clear();
             }
-            //}
 
-            //     // At day take care of builders
             vector<int> b = builders(me());
             for (int id : b)
             { // iterate over builders
 
                 Pos pciti = citizen(id).pos;
-                bdone = false;
-                gdone = false;
-                mdone = false;
+                bool bdone = false;
+                bool gdone = false;
+                bool mdone = false;
+
                 if (bexist)
                 {
                     Pos pobj = BFS(pciti, 'b');
@@ -217,9 +217,10 @@ struct PLAYER_NAME : public Player
             {
             }
         }
-    };
+    }
+};
 
-    /**
+/**
  * Do not modify the following line.
  */
-    RegisterPlayer(PLAYER_NAME);
+RegisterPlayer(PLAYER_NAME);
