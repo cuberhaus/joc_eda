@@ -32,7 +32,7 @@ struct PLAYER_NAME : public Player
 
     map<Pos, Pos> Path;
 
-    Pos BFS(Pos p, char c)
+    Pos BFS(Pos p, char objecte)
     {
         vector<vector<bool>> visitats(board_cols(), vector<bool>(board_rows(), false));
         queue<Pos> cola;
@@ -42,49 +42,63 @@ struct PLAYER_NAME : public Player
             // p has to be the node visited
             Pos pact = cola.front();
             cola.pop();
-    
-            Cell c = cell(pact);
-            visitats[pact.i][pact.j] = true;
-
-            if (c.weapon == Bazooka)
-                return pact;
-            else if (c.weapon == Gun)
-                return pact;
-
-            for (int i = 0; i < 4; ++i)
+            if (pos_ok(pact))
             {
-                Pos ptemp = pact;
-                ptemp.i += mov[i][0];
-                ptemp.j += mov[i][1];
-                Cell c = cell(ptemp);
-                if (pos_ok(ptemp) and c.type == Street and not visitats[ptemp.i][ptemp.j])
+                Cell c = cell(pact);
+                visitats[pact.i][pact.j] = true;
+
+                if (c.weapon == Bazooka and objecte == 'b')
+                    return pact;
+                else if (c.weapon == Gun and objecte == 'g')
+                    return pact;
+
+                for (int i = 0; i < 4; ++i)
                 {
-                    Path[ptemp] = pact;
-                    cola.push(ptemp);
+                    Pos ptemp = pact;
+                    ptemp.i += mov[i][0];
+                    ptemp.j += mov[i][1];
+                    if (pos_ok(ptemp) and cell(ptemp).type == Street and not visitats[ptemp.i][ptemp.j])
+                    {
+                        Path[ptemp] = pact;
+                        cola.push(ptemp);
+                    }
                 }
             }
         }
-        return Pos(-1,-1);
+        return Pos(-1, -1);
     }
-    Dir Pos2dir (Pos p) {
-        if (p == Pos(-1,0)) return Up;
-        else if (p == Pos(1,0)) return Down;
-        else if (p == Pos(0,-1)) return Left;
-        else if (p == Pos(0,1)) return Right;
-        else return Up; // this should never happen
+    Dir Pos2dir(Pos p)
+    {
+        if (p == Pos(-1, 0))
+            return Up;
+        else if (p == Pos(1, 0))
+            return Down;
+        else if (p == Pos(0, -1))
+            return Left;
+        else if (p == Pos(0, 1))
+            return Right;
+        else
+        {
+            assert(false); // this should never happen
+            return Up;
+        }
     }
     // Invariant: l'objecte ha d'existir en el mapa en el moment de la crida i l'hem trobat amb el BFS
-    Dir direccionBFS(Pos pciti, Pos pobj) {
+    Dir direccionBFS(Pos pciti, Pos pobj)
+    {
         Pos ptemp = pobj;
-        vector <Pos> positions;
-        while (pciti != ptemp) {
+        vector<Pos> positions;
+        while (pciti != ptemp)
+        {
             positions.push_back(ptemp);
             ptemp = Path.at(ptemp);
         }
-        Pos r; 
-        r.i = - pciti.i;
-        r.j = - pciti.j;
-        cerr << r;
+        Pos r;
+        auto it = positions.end();
+        --it;
+        r.i = (*it).i - pciti.i;
+        r.j = (*it).j - pciti.j;
+        //cerr << r;
         Dir dr = Pos2dir(r);
         return dr;
     }
@@ -136,39 +150,114 @@ struct PLAYER_NAME : public Player
 
         // INICIALITZAR INVARIANTS
         Path.clear();
-        if (is_day())
-        {
-            vector<int> w = warriors(me());
-            for (int id : w)
-            { // iterate over warriors
-                Pos pciti = citizen(id).pos;
-                cerr << "citizen " << id << " in position: " << pciti << endl;
-                char c = 'b'; // busquem bazokas
-                Pos pobj = BFS(pciti,c);
-                Dir d = direccionBFS(pciti,pobj);
-                //Dir d = Down; // prova
-                if (pos_ok(pciti + d))
+        //if (is_day())
+        //{
+        vector<int> w = warriors(me());
+        bool bexist = true;
+        bool gexist = true;
+        bool mexist = true;
+        bool bdone = false;
+        bool gdone = false;
+        bool mdone = false;
+        for (int id : w)
+        { // iterate over warriors
+            Pos pciti = citizen(id).pos;
+            bdone = false;
+            gdone = false;
+            mdone = false;
+            if (bexist)
+            {
+                Pos pobj = BFS(pciti, 'b');
+                bdone = true;
+                if (pobj != Pos(-1, -1))
                 {
-                    move(id, d);
+                    Dir d = direccionBFS(pciti, pobj);
+                    if (pos_ok(pciti + d))
+                    {
+                        move(id, d);
+                    }
+                }
+                else
+                {
+                    bexist = false;
                 }
             }
-
-            // At day take care of builders
-            vector<int> b = builders(me());
-            for (int id : b)
-            { // iterate over builders
-                Pos p = citizen(id).pos;
-                cerr << "citizen " << id << " in position: " << p << endl;
-                // BFS(p);
-
-                if (pos_ok(p + Down))
+            else if (gexist)
+            {
+                Pos pobj = BFS(pciti, 'g');
+                gdone = true;
+                if (pobj != Pos(-1, -1))
                 {
-                    move(id, Down);
+                    Dir d = direccionBFS(pciti, pobj);
+                    if (pos_ok(pciti + d))
+                    {
+                        move(id, d);
+                    }
+                }
+                else
+                {
+                    gexist = false;
                 }
             }
-        }
-        else
-        { // night time
+            //}
+
+            //     // At day take care of builders
+            //     vector<int> b = builders(me());
+            //     for (int id : b)
+            //     { // iterate over builders
+            //         Pos pciti = citizen(id).pos;
+            //         //cerr << "citizen " << id << " in position: " << pciti << endl;
+            //         char c = 'b'; // busquem bazokas
+            //         Pos pobj = BFS(pciti, c);
+            //         if (pobj != Pos(-1, -1))
+            //         {
+            //             Dir d = direccionBFS(pciti, pobj);
+            //             //Dir d = Down; // prova
+            //             if (pos_ok(pciti + d))
+            //             {
+            //                 move(id, d);
+            //             }
+            //         }
+            //     }
+            // }
+            // else
+            // { // night time
+            //     vector<int> w = warriors(me());
+            //     for (int id : w)
+            //     { // iterate over warriors
+            //         Pos pciti = citizen(id).pos;
+            //         //cerr << "citizen " << id << " in position: " << pciti << endl;
+            //         char c = 'b'; // busquem bazokas
+            //         Pos pobj = BFS(pciti, c);
+            //         if (pobj != Pos(-1, -1))
+            //         {
+            //             Dir d = direccionBFS(pciti, pobj);
+            //             //Dir d = Down; // prova
+            //             if (pos_ok(pciti + d))
+            //             {
+            //                 move(id, d);
+            //             }
+            //         }
+            //     }
+
+            //     // At day take care of builders
+            //     vector<int> b = builders(me());
+            //     for (int id : b)
+            //     { // iterate over builders
+            //         Pos pciti = citizen(id).pos;
+            //         //cerr << "citizen " << id << " in position: " << pciti << endl;
+            //         char c = 'b'; // busquem bazokas
+            //         Pos pobj = BFS(pciti, c);
+            //         if (pobj != Pos(-1, -1))
+            //         {
+            //             Dir d = direccionBFS(pciti, pobj);
+            //             //Dir d = Down; // prova
+            //             if (pos_ok(pciti + d))
+            //             {
+            //                 move(id, d);
+            //             }
+            //         }
+            //     }
         }
     }
 };
