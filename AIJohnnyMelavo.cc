@@ -28,6 +28,7 @@ struct PLAYER_NAME : public Player
 
     Pos BFS(Pos p, char objecte, bool fightmode)
     {
+        int player = citizen(cell(p).id).player;
         queue<Pos> cola;
         cola.push(p);
         while (not cola.empty())
@@ -46,7 +47,7 @@ struct PLAYER_NAME : public Player
                     return pact;
                 else if (c.id != -1 and objecte == 'B')
                 {
-                    if (citizen(c.id).type == Builder)
+                    if (citizen(c.id).type == Builder and citizen(c.id).player != player)
                     {
                         return pact;
                     }
@@ -140,117 +141,77 @@ struct PLAYER_NAME : public Player
    */
     virtual void play()
     {
-        // INICIALITZAR INVARIANT
-        Path.clear();
-        // Suposem que existeixen bazokas pistolas i diners dins el mapa
-        //bool Bexist = true;
-        //bool wexist = true;
-        //bool bexist = true;
-        //bool gexist = true;
-        //bool mexist = true;
         if (is_day())
         {
             vector<int> w = warriors(me());
-
             // Iterem sobre els guerrers
             for (int id : w)
             {
                 Pos pciti = citizen(id).pos;
                 Pos pobj;
-                // Serà true si busquem amb Bfs (bazokas, pistoles...)
-                bool moved = false;
-
-                pobj = BFS(pciti, 'b', false); // busquem bazokas
+                // busquem bazookas
+                Path.clear();
+                pobj = BFS(pciti, 'b', false);
                 if (pobj != Pos(-1, -1) and pobj != pciti)
                 {
                     Dir d = direccionBFS(pciti, pobj);
-                    Path.clear();
                     if (pos_ok(pciti + d))
                     {
                         move(id, d);
-                        moved = true;
                     }
                 }
-                else
-                {
-                    Path.clear();
-                    //bexist = false; // no hi han bazokas al mapa
-                }
-
-                pobj = BFS(pciti, 'g', false); // busquem pistoles
+                // busquem pistoles
+                Path.clear();
+                pobj = BFS(pciti, 'g', false);
                 if (pobj != Pos(-1, -1) and pobj != pciti)
                 {
                     Dir d = direccionBFS(pciti, pobj);
-                    Path.clear();
                     if (pos_ok(pciti + d))
                     {
                         move(id, d);
-                        moved = true;
                     }
                 }
-                else
-                {
-                    Path.clear();
-                    //gexist = false; // no hi ha pistoles al mapa
-                }
-
-                pobj = BFS(pciti, 'm', false); // busquem diners
+                // busquem diners
+                Path.clear();
+                pobj = BFS(pciti, 'm', false);
                 if (pobj != Pos(-1, -1) and pobj != pciti)
                 {
                     Dir d = direccionBFS(pciti, pobj);
-                    Path.clear();
                     if (pos_ok(pciti + d))
                     {
                         move(id, d);
-                        moved = true;
                     }
-                }
-                else
-                {
-                    Path.clear();
-                    //mexist = false; // no hi ha diners al mapa
                 }
             }
-            Path.clear();
             vector<int> b = builders(me());
             for (int id : b)
             { // iterate over builders
                 Pos pobj;
                 Pos pciti = citizen(id).pos;
-                bool moved = false;
-
-                pobj = BFS(pciti, 'm', false); // busquem diners
+                // busquem diners
+                Path.clear();
+                pobj = BFS(pciti, 'm', false);
                 if (pobj != Pos(-1, -1) and pobj != pciti)
                 {
                     Dir d = direccionBFS(pciti, pobj);
-                    Path.clear();
                     if (pos_ok(pciti + d))
                     {
-                        moved = true;
                         move(id, d);
                     }
                 }
-                else
-                {
-                    Path.clear();
-                    //mexist = false; // no hi ha diners al mapa
-                }
+                // Busquem bazookas
+                Path.clear();
                 pobj = BFS(pciti, 'b', false);
                 if (pobj != Pos(-1, -1) and pobj != pciti)
                 {
                     Dir d = direccionBFS(pciti, pobj);
-                    Path.clear();
                     if (pos_ok(pciti + d))
                     {
-                        moved = true;
                         move(id, d);
                     }
                 }
-                else
-                {
-                    Path.clear();
-                    //bexist = false;
-                }
+                // Busquem pistoles
+                Path.clear();
                 pobj = BFS(pciti, 'g', false);
                 if (pobj != Pos(-1, -1) and pobj != pciti)
                 {
@@ -258,16 +219,9 @@ struct PLAYER_NAME : public Player
                     Path.clear();
                     if (pos_ok(pciti + d))
                     {
-                        moved = true;
                         move(id, d);
                     }
                 }
-                else
-                {
-                    Path.clear();
-                    //gexist = false;
-                }
-                Path.clear();
             }
         }
         else
@@ -277,24 +231,17 @@ struct PLAYER_NAME : public Player
             { // iterate over warriors
                 Pos pciti = citizen(id).pos;
                 Pos pobj;
-                // Serà true si busquem amb Bfs (bazokas, pistoles...)
-                bool moved = false;
 
+                // busquem Builders
                 Path.clear();
-                pobj = BFS(pciti, 'B', true); // busquem Builders
+                pobj = BFS(pciti, 'B', true);
                 if (pobj != Pos(-1, -1) and pobj != pciti)
                 {
                     Dir d = direccionBFS(pciti, pobj);
-                    Path.clear();
                     if (pos_ok(pciti + d))
                     {
                         move(id, d);
-                        moved = true;
                     }
-                }
-                else
-                {
-                    Path.clear();
                 }
             }
 
@@ -303,57 +250,39 @@ struct PLAYER_NAME : public Player
             {
                 Pos pobj;
                 Pos pciti = citizen(id).pos;
-                bool moved = false;
-
-                pobj = BFS(pciti, 'm', false); // busquem diners
+                // busquem diners
+                Path.clear();
+                pobj = BFS(pciti, 'm', false);
                 if (pobj != Pos(-1, -1) and pobj != pciti)
                 {
                     Dir d = direccionBFS(pciti, pobj);
-                    Path.clear();
                     if (pos_ok(pciti + d))
                     {
-                        moved = true;
                         move(id, d);
                     }
                 }
-                else
-                {
-                    Path.clear();
-                    //mexist = false; // no hi ha diners al mapa
-                }
+                // busquem bazookas
+                Path.clear();
                 pobj = BFS(pciti, 'b', false);
                 if (pobj != Pos(-1, -1) and pobj != pciti)
                 {
                     Dir d = direccionBFS(pciti, pobj);
-                    Path.clear();
                     if (pos_ok(pciti + d))
                     {
-                        moved = true;
                         move(id, d);
                     }
                 }
-                else
-                {
-                    Path.clear();
-                    //bexist = false;
-                }
+                // busquem pistoles
+                Path.clear();
                 pobj = BFS(pciti, 'g', false);
                 if (pobj != Pos(-1, -1) and pobj != pciti)
                 {
                     Dir d = direccionBFS(pciti, pobj);
-                    Path.clear();
                     if (pos_ok(pciti + d))
                     {
-                        moved = true;
                         move(id, d);
                     }
                 }
-                else
-                {
-                    Path.clear();
-                    //gexist = false;
-                }
-                Path.clear();
             }
         }
     }
