@@ -52,11 +52,13 @@ struct PLAYER_NAME : public Player
                         return pact;
                     }
                 }
-                // else if (c.id != -1 and objecte == 'w')
-                // {
-                //     if (citizen(c.b_owner).type == Warrior and citizen(c.b_owner).weapon != Bazooka)
-                //         return pact;
-                // }
+                else if (c.id != -1 and objecte == 'w')
+                {
+                    if (citizen(c.id).type == Warrior and citizen(c.id).player != player and citizen(c.id).weapon != Bazooka)
+                    { // and citizen(c.id).weapon != Bazooka)
+                        return pact;
+                    }
+                }
 
                 for (int i = 0; i < 4; ++i)
                 {
@@ -162,22 +164,24 @@ struct PLAYER_NAME : public Player
                             move(id, d);
                         }
                     }
-                    // busquem pistoles
-                    Path.clear();
-                    pobj = BFS(pciti, 'g', false);
-                    if (pobj != Pos(-1, -1) and pobj != pciti)
+                    if (citizen(cell(pciti).id).weapon != Gun)
                     {
-                        Dir d = direccionBFS(pciti, pobj);
-                        if (pos_ok(pciti + d))
+                        // busquem pistoles
+                        Path.clear();
+                        pobj = BFS(pciti, 'g', false);
+                        if (pobj != Pos(-1, -1) and pobj != pciti)
                         {
-                            move(id, d);
+                            Dir d = direccionBFS(pciti, pobj);
+                            if (pos_ok(pciti + d))
+                            {
+                                move(id, d);
+                            }
                         }
                     }
                 }
 
-                // busquem diners
                 Path.clear();
-                pobj = BFS(pciti, 'B', false);
+                pobj = BFS(pciti, 'B', true);
                 if (pobj != Pos(-1, -1) and pobj != pciti)
                 {
                     Dir d = direccionBFS(pciti, pobj);
@@ -236,15 +240,31 @@ struct PLAYER_NAME : public Player
                 Pos pciti = citizen(id).pos;
                 Pos pobj;
 
-                // busquem Builders
-                Path.clear();
-                pobj = BFS(pciti, 'B', true);
-                if (pobj != Pos(-1, -1) and pobj != pciti)
+                if (citizen(cell(pciti).id).weapon != Bazooka)
                 {
-                    Dir d = direccionBFS(pciti, pobj);
-                    if (pos_ok(pciti + d))
+                    // busquem Builders
+                    Path.clear();
+                    pobj = BFS(pciti, 'B', true);
+                    if (pobj != Pos(-1, -1) and pobj != pciti)
                     {
-                        move(id, d);
+                        Dir d = direccionBFS(pciti, pobj);
+                        if (pos_ok(pciti + d))
+                        {
+                            move(id, d);
+                        }
+                    }
+                }
+                else
+                {
+                    Path.clear();
+                    pobj = BFS(pciti, 'w', true);
+                    if (pobj != Pos(-1, -1) and pobj != pciti)
+                    {
+                        Dir d = direccionBFS(pciti, pobj);
+                        if (pos_ok(pciti + d))
+                        {
+                            move(id, d);
+                        }
                     }
                 }
             }
@@ -257,6 +277,7 @@ struct PLAYER_NAME : public Player
                 // busquem diners
                 Path.clear();
                 pobj = BFS(pciti, 'm', false);
+
                 if (pobj != Pos(-1, -1) and pobj != pciti)
                 {
                     Dir d = direccionBFS(pciti, pobj);

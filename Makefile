@@ -1,7 +1,7 @@
 DUMMY_OBJ = AIDummy.o
 
 # Add here any extra .o player files you want to link to the executable
-EXTRA_OBJ = AItest7.o AIJuanCarlosI.o
+EXTRA_OBJ = AItest7.o 
 
 # Configuration
 OPTIMIZE = 0 # Optimization level    (0 to 3)
