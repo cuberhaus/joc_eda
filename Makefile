@@ -23,7 +23,7 @@ ifeq ($(strip $(DEBUG)),1)
 	DEBUGFLAGS=-g -O0 -fno-inline #-D_GLIBCXX_DEBUG 
 endif
 
-CXXFLAGS = -std=c++11 -Wall -g -Wno-unused-variable -fPIC $(PROFILEFLAGS) $(DEBUGFLAGS) -O$(strip $(OPTIMIZE)) 
+CXXFLAGS = -std=c++11 -Wall -Wno-unused-variable -fPIC $(PROFILEFLAGS) $(DEBUGFLAGS) -O$(strip $(OPTIMIZE)) 
 LDFLAGS  = -std=c++11                            $(PROFILEFLAGS) $(DEBUGFLAGS) -O$(strip $(OPTIMIZE))
 
 
