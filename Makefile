@@ -4,8 +4,8 @@ DUMMY_OBJ = AIDummy.o
 EXTRA_OBJ =
 
 # Configuration
-OPTIMIZE = 0 # Optimization level    (0 to 3)
-DEBUG    = 1 # Compile for debugging (0 or 1)
+OPTIMIZE = 3 # Optimization level    (0 to 3)
+DEBUG    = 0 # Compile for debugging (0 or 1)
 PROFILE  = 0 # Compile for profile   (0 or 1)
 
 # For debugging matches against Dummy
