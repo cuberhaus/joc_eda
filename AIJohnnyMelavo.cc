@@ -149,31 +149,35 @@ struct PLAYER_NAME : public Player
             {
                 Pos pciti = citizen(id).pos;
                 Pos pobj;
-                // busquem bazookas
-                Path.clear();
-                pobj = BFS(pciti, 'b', false);
-                if (pobj != Pos(-1, -1) and pobj != pciti)
+                if (citizen(cell(pciti).id).weapon != Bazooka)
                 {
-                    Dir d = direccionBFS(pciti, pobj);
-                    if (pos_ok(pciti + d))
+                    // busquem bazookas
+                    Path.clear();
+                    pobj = BFS(pciti, 'b', false);
+                    if (pobj != Pos(-1, -1) and pobj != pciti)
                     {
-                        move(id, d);
+                        Dir d = direccionBFS(pciti, pobj);
+                        if (pos_ok(pciti + d))
+                        {
+                            move(id, d);
+                        }
+                    }
+                    // busquem pistoles
+                    Path.clear();
+                    pobj = BFS(pciti, 'g', false);
+                    if (pobj != Pos(-1, -1) and pobj != pciti)
+                    {
+                        Dir d = direccionBFS(pciti, pobj);
+                        if (pos_ok(pciti + d))
+                        {
+                            move(id, d);
+                        }
                     }
                 }
-                // busquem pistoles
-                Path.clear();
-                pobj = BFS(pciti, 'g', false);
-                if (pobj != Pos(-1, -1) and pobj != pciti)
-                {
-                    Dir d = direccionBFS(pciti, pobj);
-                    if (pos_ok(pciti + d))
-                    {
-                        move(id, d);
-                    }
-                }
+
                 // busquem diners
                 Path.clear();
-                pobj = BFS(pciti, 'm', false);
+                pobj = BFS(pciti, 'B', false);
                 if (pobj != Pos(-1, -1) and pobj != pciti)
                 {
                     Dir d = direccionBFS(pciti, pobj);
