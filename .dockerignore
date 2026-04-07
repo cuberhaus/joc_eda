@@ -11,3 +11,4 @@ Viewer/
 .github
 *.res
 Makefile.deps
+web/backend-go/server

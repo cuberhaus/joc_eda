@@ -61,8 +61,8 @@ Makefile.deps: *.cc
 web-install: ## Install web frontend dependencies
 	cd web/frontend && npm install
 
-web-dev: ## Start backend + frontend dev servers
-	cd web && uvicorn backend.app:app --host 127.0.0.1 --port 8087 --reload &
+web-dev: ## Start Go backend + frontend dev servers
+	cd web/backend-go && GAME_BIN=../../Game CONFIG_FILE=../backend/data/default.cnf DATA_DIR=../backend/data STATIC_DIR=../frontend/dist go run . &
 	cd web/frontend && npm run dev
 
 web-build: ## Build web frontend for production

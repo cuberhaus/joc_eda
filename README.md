@@ -52,7 +52,7 @@ Use the viewer (`Viewer/viewer.html`) to visualize game replays.
 
 A full-stack game viewer with live C++ engine execution, Canvas rendering, and interactive replay controls.
 
-**Stack:** Mithril.js (Vite) + HTML5 Canvas + FastAPI backend wrapping the compiled C++ game engine
+**Stack:** Mithril.js (Vite) + HTML5 Canvas + Go backend (stdlib `net/http`) wrapping the compiled C++ game engine
 
 ### Quick Start
 
@@ -80,14 +80,16 @@ web/
 │   └── src/
 │       ├── components/        # Board renderer, controls, player panel
 │       └── styles/            # Dark theme CSS
-├── backend/           # FastAPI + compiled C++ Game engine
-│   └── app.py
-└── requirements.txt
+├── backend-go/        # Go stdlib HTTP server + C++ Game engine
+│   ├── main.go        # HTTP handlers, SPA serving
+│   ├── parser.go      # Token-based replay parser
+│   ├── runner.go      # C++ subprocess management
+│   └── go.mod
 ```
 
 ## Tech Stack
 
 - **C++11** for game engine and AI logic
 - **Mithril.js** + **Canvas** for the interactive web frontend
-- **FastAPI** for the web backend (wraps the C++ engine)
+- **Go** (stdlib `net/http`) for the web backend (wraps the C++ engine)
 - **HTML/JS** for the legacy game replay viewer (`Viewer/`)
