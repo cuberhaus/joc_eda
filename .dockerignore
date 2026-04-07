@@ -1,0 +1,13 @@
+web/frontend/node_modules
+web/frontend/dist
+__pycache__
+*.pyc
+*.o
+Game
+*.exe
+.git
+Viewer/
+*.pdf
+.github
+*.res
+Makefile.deps

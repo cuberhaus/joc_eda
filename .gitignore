@@ -3,3 +3,8 @@
 *.o
 Game
 Makefile.deps
+
+web/frontend/node_modules/
+web/frontend/dist/
+__pycache__/
+*.pyc

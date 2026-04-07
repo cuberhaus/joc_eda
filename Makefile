@@ -53,4 +53,29 @@ SecGame: $(OBJ) SecGame.o SecMain.o
 Makefile.deps: *.cc
 	$(CXX) $(CXXFLAGS) -MM *.cc > Makefile.deps
 
-include Makefile.deps
+-include Makefile.deps
+
+# ─── Web app targets ───────────────────────────────────
+.PHONY: web-install web-dev web-build docker-build docker-up docker-down web-help
+
+web-install: ## Install web frontend dependencies
+	cd web/frontend && npm install
+
+web-dev: ## Start backend + frontend dev servers
+	cd web && uvicorn backend.app:app --host 127.0.0.1 --port 8087 --reload &
+	cd web/frontend && npm run dev
+
+web-build: ## Build web frontend for production
+	cd web/frontend && npm run build
+
+docker-build: ## Build Docker image
+	docker compose build
+
+docker-up: ## Start Docker container
+	docker compose up -d
+
+docker-down: ## Stop Docker container
+	docker compose down
+
+web-help: ## Show web targets
+	@grep -E '^(web-|docker-)[a-zA-Z_-]+:.*##' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*##"}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
