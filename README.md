@@ -48,7 +48,46 @@ make
 
 Use the viewer (`Viewer/viewer.html`) to visualize game replays.
 
+## Web App
+
+A full-stack game viewer with live C++ engine execution, Canvas rendering, and interactive replay controls.
+
+**Stack:** Mithril.js (Vite) + HTML5 Canvas + FastAPI backend wrapping the compiled C++ game engine
+
+### Quick Start
+
+```bash
+# Docker (recommended)
+docker compose up -d        # http://localhost:8087
+
+# Dev mode
+make web-dev                # Backend :8087, Vite dev server
+```
+
+### Features
+
+- Live game generation — run matches with configurable AI players directly from the browser
+- Replay upload and animated playback with play/pause/step/speed controls
+- Canvas grid rendering with animated unit movement, buildings, weapons, and bonuses
+- Keyboard shortcuts for playback control
+- Player scoreboard and round-by-round stats
+
+### Web Structure
+
+```
+web/
+├── frontend/          # Mithril.js + Vite + Canvas
+│   └── src/
+│       ├── components/        # Board renderer, controls, player panel
+│       └── styles/            # Dark theme CSS
+├── backend/           # FastAPI + compiled C++ Game engine
+│   └── app.py
+└── requirements.txt
+```
+
 ## Tech Stack
 
 - **C++11** for game engine and AI logic
-- **HTML/JS** for the game replay viewer
+- **Mithril.js** + **Canvas** for the interactive web frontend
+- **FastAPI** for the web backend (wraps the C++ engine)
+- **HTML/JS** for the legacy game replay viewer (`Viewer/`)
