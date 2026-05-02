@@ -12,7 +12,7 @@ RUN touch Makefile.deps && make DUMMY_OBJ= EXTRA_OBJ= Game
 
 FROM golang:1.22-bookworm AS go-build
 WORKDIR /src
-COPY web/backend-go/go.mod ./
+COPY web/backend-go/go.mod web/backend-go/go.sum ./
 RUN go mod download
 COPY web/backend-go/*.go ./
 RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o server .

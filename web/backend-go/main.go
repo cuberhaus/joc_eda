@@ -145,6 +145,12 @@ func corsMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
+	flushSentry, sentryEnabled := initSentry("joc-eda")
+	defer flushSentry()
+
+	log.SetFlags(0)
+	log.SetOutput(jsonStdoutWriter{ns: "joc-eda"})
+
 	port := envOr("PORT", "8087")
 	staticDir := envOr("STATIC_DIR", "frontend/dist")
 
@@ -159,7 +165,7 @@ func main() {
 		mux.Handle("/", &spaHandler{staticDir: staticDir})
 	}
 
-	handler := corsMiddleware(mux)
+	handler := withSentryHTTP(corsMiddleware(mux), sentryEnabled)
 
 	log.Printf("listening on 0.0.0.0:%s", port)
 	if err := http.ListenAndServe(":"+port, handler); err != nil {
