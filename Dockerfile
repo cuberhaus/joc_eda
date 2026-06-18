@@ -1,16 +1,16 @@
-FROM node:22-slim AS frontend
+FROM node:26-slim AS frontend
 WORKDIR /build
 COPY web/frontend/package.json web/frontend/package-lock.json ./
 RUN npm ci
 COPY web/frontend/ ./
 RUN npm run build
 
-FROM gcc:13-bookworm AS engine
+FROM gcc:15-bookworm AS engine
 WORKDIR /build
 COPY *.cc *.hh Makefile ./
 RUN touch Makefile.deps && make DUMMY_OBJ= EXTRA_OBJ= Game
 
-FROM golang:1.22-bookworm AS go-build
+FROM golang:1.26-bookworm AS go-build
 WORKDIR /src
 COPY web/backend-go/go.mod web/backend-go/go.sum ./
 RUN go mod download
