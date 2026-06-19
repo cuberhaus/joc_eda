@@ -13,5 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v7
+    - name: Provide precompiled Dummy player object (Linux)
+      run: cp AIDummy.o.Linux64 AIDummy.o
     - name: make
       run: make
