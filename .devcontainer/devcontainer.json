@@ -1,0 +1,22 @@
+{
+  "//": "cuberhaus reproducible dev environment (c++ core + go backend, e.g. joc_eda). Managed source: cuberhaus-workspace/assets/devcontainers/cpp-go. Applied per repo by scripts/apply-devcontainers.ps1.",
+  "name": "cuberhaus cpp + go",
+  "image": "mcr.microsoft.com/devcontainers/cpp:1-debian-12",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/go:1": {},
+    "ghcr.io/devcontainers/features/node:1": {}
+  },
+  "remoteUser": "vscode",
+  "postCreateCommand": "bash -lc 'if [ -f skills-lock.json ]; then make skills-restore || true; fi; if [ -f go.mod ]; then go mod download || true; fi'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools",
+        "golang.go"
+      ]
+    }
+  }
+}
