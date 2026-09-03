@@ -3,8 +3,24 @@ name: C/C++ CI
 on:
   push:
     branches: [ main ]
+    paths:
+      - '**.cc'
+      - '**.hh'
+      - Makefile
+      - AIDummy.o.Linux64
+      - .github/workflows/c-cpp.yml
   pull_request:
     branches: [ main ]
+    paths:
+      - '**.cc'
+      - '**.hh'
+      - Makefile
+      - AIDummy.o.Linux64
+      - .github/workflows/c-cpp.yml
+
+concurrency:
+  group: c-cpp-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
