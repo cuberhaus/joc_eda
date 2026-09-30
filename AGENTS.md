@@ -29,7 +29,7 @@ The Go backend expects `GAME_BIN`, `CONFIG_FILE`, `DATA_DIR`, `STATIC_DIR` env v
 
 ## Pitfalls
 
-- `AIJohnnyMelavo.cc` and the surrounding C++ framework are the graded course artifact — treat as **frozen**. Do not refactor framework files (`Game.*`, `Board.*`, `Player.*`, `Structs.*`, etc.); only the `AI*.cc` strategy file is fair game.
+- The framework files (`Game.*`, `Board.*`, `Player.*`, `Structs.*`, etc.) are course-provided; the graded strategy lives in `AIJohnnyMelavo.cc`.
 - The Makefile auto-detects all `AI*.cc` files. Adding a new AI requires no Makefile change but the file must follow the `Player` interface and call the `Registry` macro.
 - Web frontend/backend are auxiliary tooling and can evolve freely, but the backend depends on the exact stdout token format produced by `./Game` — keep `web/backend-go/parser.go` in sync if the engine output ever changes.
 - `default.cnf` is the canonical match config; `default-fixed.cnf` is used for deterministic regression runs.
